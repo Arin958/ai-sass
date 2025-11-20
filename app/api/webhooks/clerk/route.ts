@@ -10,6 +10,7 @@ interface ClerkWebhookEvent {
     first_name: string;
     last_name: string;
     username: string;
+
   };
 }
 
@@ -39,16 +40,18 @@ export async function POST(req: Request) {
   const data = event.data;
 
   if (event.type === "user.created") {
-    await prisma.user.upsert({
-      where: { clerkId: data.id },
-      update: {}, // no-op if exists
-      create: {
-        clerkId: data.id,
-        email: data.email_addresses[0].email_address,
-        name: `${data.first_name} ${data.last_name}`,
-        username: data.username,
-      },
-    });
+   await prisma.user.upsert({
+  where: { clerkId: data.id },
+  update: {}, // no-op if exists
+  create: {
+    clerkId: data.id,
+    email: data.email_addresses[0].email_address,
+    // Use the actual field names from your Prisma schema
+    firstName: data.first_name,    // if your model has firstName
+    lastName: data.last_name,      // if your model has lastName
+    username: data.username,
+  },
+});
   }
 
   if (event.type === "user.deleted") {

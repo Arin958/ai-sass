@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.0.0",
   "engineVersion": "0c19ccc313cf9911a90d99d2ac2eb0280c76c513",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../lib/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  clerkId   String   @unique\n  email     String   @unique\n  name      String?\n  username  String\n  createdAt DateTime @default(now())\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../lib/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  clerkId   String   @unique\n  email     String   @unique\n  firstName String?\n  lastName  String?\n  username  String   @unique\n  createdAt DateTime @default(now())\n\n  // Subscription (add this)\n  subscription Subscription?\n\n  // AI Tools History (add these)\n  blogPosts        BlogPost[]\n  resumes          Resume[]\n  codeExplanations CodeExplanation[]\n  bugFixes         BugFix[]\n  chatSessions     ChatSession[]\n\n  @@map(\"users\")\n}\n\n// Add these new models:\nmodel Subscription {\n  id                 String   @id @default(cuid())\n  userId             Int      @unique\n  stripeId           String   @unique\n  status             String // active, canceled, past_due\n  priceId            String\n  currentPeriodStart DateTime\n  currentPeriodEnd   DateTime\n  cancelAtPeriodEnd  Boolean  @default(false)\n  createdAt          DateTime @default(now())\n  updatedAt          DateTime @updatedAt\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"subscriptions\")\n}\n\n// History Models for AI Tools\nmodel BlogPost {\n  id        String   @id @default(cuid())\n  title     String\n  content   String   @db.Text\n  topic     String\n  tone      String\n  length    String\n  createdAt DateTime @default(now())\n  userId    Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"blog_posts\")\n}\n\nmodel Resume {\n  id         String   @id @default(cuid())\n  jobTitle   String\n  experience String\n  skills     Json\n  output     String   @db.Text\n  createdAt  DateTime @default(now())\n  userId     Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"resumes\")\n}\n\nmodel CodeExplanation {\n  id          String   @id @default(cuid())\n  code        String   @db.Text\n  language    String\n  explanation String   @db.Text\n  createdAt   DateTime @default(now())\n  userId      Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"code_explanations\")\n}\n\nmodel BugFix {\n  id          String   @id @default(cuid())\n  code        String   @db.Text\n  language    String\n  issue       String\n  fix         String   @db.Text\n  explanation String   @db.Text\n  createdAt   DateTime @default(now())\n  userId      Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"bug_fixes\")\n}\n\nmodel ChatSession {\n  id        String   @id @default(cuid())\n  title     String\n  messages  Json // Array of chat messages\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  userId    Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"chat_sessions\")\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"clerkId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"clerkId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"subscription\",\"kind\":\"object\",\"type\":\"Subscription\",\"relationName\":\"SubscriptionToUser\"},{\"name\":\"blogPosts\",\"kind\":\"object\",\"type\":\"BlogPost\",\"relationName\":\"BlogPostToUser\"},{\"name\":\"resumes\",\"kind\":\"object\",\"type\":\"Resume\",\"relationName\":\"ResumeToUser\"},{\"name\":\"codeExplanations\",\"kind\":\"object\",\"type\":\"CodeExplanation\",\"relationName\":\"CodeExplanationToUser\"},{\"name\":\"bugFixes\",\"kind\":\"object\",\"type\":\"BugFix\",\"relationName\":\"BugFixToUser\"},{\"name\":\"chatSessions\",\"kind\":\"object\",\"type\":\"ChatSession\",\"relationName\":\"ChatSessionToUser\"}],\"dbName\":\"users\"},\"Subscription\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"stripeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"priceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"currentPeriodStart\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"currentPeriodEnd\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"cancelAtPeriodEnd\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SubscriptionToUser\"}],\"dbName\":\"subscriptions\"},\"BlogPost\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"topic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"length\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BlogPostToUser\"}],\"dbName\":\"blog_posts\"},\"Resume\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"jobTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"experience\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"skills\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"output\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ResumeToUser\"}],\"dbName\":\"resumes\"},\"CodeExplanation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"language\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"explanation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CodeExplanationToUser\"}],\"dbName\":\"code_explanations\"},\"BugFix\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"language\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"issue\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fix\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"explanation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BugFixToUser\"}],\"dbName\":\"bug_fixes\"},\"ChatSession\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"messages\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ChatSessionToUser\"}],\"dbName\":\"chat_sessions\"}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -183,6 +183,66 @@ export interface PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.subscription`: Exposes CRUD operations for the **Subscription** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Subscriptions
+    * const subscriptions = await prisma.subscription.findMany()
+    * ```
+    */
+  get subscription(): Prisma.SubscriptionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.blogPost`: Exposes CRUD operations for the **BlogPost** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BlogPosts
+    * const blogPosts = await prisma.blogPost.findMany()
+    * ```
+    */
+  get blogPost(): Prisma.BlogPostDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.resume`: Exposes CRUD operations for the **Resume** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Resumes
+    * const resumes = await prisma.resume.findMany()
+    * ```
+    */
+  get resume(): Prisma.ResumeDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.codeExplanation`: Exposes CRUD operations for the **CodeExplanation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CodeExplanations
+    * const codeExplanations = await prisma.codeExplanation.findMany()
+    * ```
+    */
+  get codeExplanation(): Prisma.CodeExplanationDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.bugFix`: Exposes CRUD operations for the **BugFix** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BugFixes
+    * const bugFixes = await prisma.bugFix.findMany()
+    * ```
+    */
+  get bugFix(): Prisma.BugFixDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.chatSession`: Exposes CRUD operations for the **ChatSession** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChatSessions
+    * const chatSessions = await prisma.chatSession.findMany()
+    * ```
+    */
+  get chatSession(): Prisma.ChatSessionDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

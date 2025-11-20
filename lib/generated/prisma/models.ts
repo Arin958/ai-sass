@@ -9,4 +9,10 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Subscription'
+export type * from './models/BlogPost'
+export type * from './models/Resume'
+export type * from './models/CodeExplanation'
+export type * from './models/BugFix'
+export type * from './models/ChatSession'
 export type * from './commonInputTypes'

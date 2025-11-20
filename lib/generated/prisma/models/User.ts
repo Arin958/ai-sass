@@ -38,7 +38,8 @@ export type UserMinAggregateOutputType = {
   id: number | null
   clerkId: string | null
   email: string | null
-  name: string | null
+  firstName: string | null
+  lastName: string | null
   username: string | null
   createdAt: Date | null
 }
@@ -47,7 +48,8 @@ export type UserMaxAggregateOutputType = {
   id: number | null
   clerkId: string | null
   email: string | null
-  name: string | null
+  firstName: string | null
+  lastName: string | null
   username: string | null
   createdAt: Date | null
 }
@@ -56,7 +58,8 @@ export type UserCountAggregateOutputType = {
   id: number
   clerkId: number
   email: number
-  name: number
+  firstName: number
+  lastName: number
   username: number
   createdAt: number
   _all: number
@@ -75,7 +78,8 @@ export type UserMinAggregateInputType = {
   id?: true
   clerkId?: true
   email?: true
-  name?: true
+  firstName?: true
+  lastName?: true
   username?: true
   createdAt?: true
 }
@@ -84,7 +88,8 @@ export type UserMaxAggregateInputType = {
   id?: true
   clerkId?: true
   email?: true
-  name?: true
+  firstName?: true
+  lastName?: true
   username?: true
   createdAt?: true
 }
@@ -93,7 +98,8 @@ export type UserCountAggregateInputType = {
   id?: true
   clerkId?: true
   email?: true
-  name?: true
+  firstName?: true
+  lastName?: true
   username?: true
   createdAt?: true
   _all?: true
@@ -189,7 +195,8 @@ export type UserGroupByOutputType = {
   id: number
   clerkId: string
   email: string
-  name: string | null
+  firstName: string | null
+  lastName: string | null
   username: string
   createdAt: Date
   _count: UserCountAggregateOutputType | null
@@ -221,37 +228,59 @@ export type UserWhereInput = {
   id?: Prisma.IntFilter<"User"> | number
   clerkId?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
-  name?: Prisma.StringNullableFilter<"User"> | string | null
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
   username?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
+  blogPosts?: Prisma.BlogPostListRelationFilter
+  resumes?: Prisma.ResumeListRelationFilter
+  codeExplanations?: Prisma.CodeExplanationListRelationFilter
+  bugFixes?: Prisma.BugFixListRelationFilter
+  chatSessions?: Prisma.ChatSessionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   clerkId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  name?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  subscription?: Prisma.SubscriptionOrderByWithRelationInput
+  blogPosts?: Prisma.BlogPostOrderByRelationAggregateInput
+  resumes?: Prisma.ResumeOrderByRelationAggregateInput
+  codeExplanations?: Prisma.CodeExplanationOrderByRelationAggregateInput
+  bugFixes?: Prisma.BugFixOrderByRelationAggregateInput
+  chatSessions?: Prisma.ChatSessionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   clerkId?: string
   email?: string
+  username?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  name?: Prisma.StringNullableFilter<"User"> | string | null
-  username?: Prisma.StringFilter<"User"> | string
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-}, "id" | "clerkId" | "email">
+  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
+  blogPosts?: Prisma.BlogPostListRelationFilter
+  resumes?: Prisma.ResumeListRelationFilter
+  codeExplanations?: Prisma.CodeExplanationListRelationFilter
+  bugFixes?: Prisma.BugFixListRelationFilter
+  chatSessions?: Prisma.ChatSessionListRelationFilter
+}, "id" | "clerkId" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   clerkId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  name?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -268,7 +297,8 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"User"> | number
   clerkId?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -276,42 +306,71 @@ export type UserScalarWhereWithAggregatesInput = {
 export type UserCreateInput = {
   clerkId: string
   email: string
-  name?: string | null
+  firstName?: string | null
+  lastName?: string | null
   username: string
   createdAt?: Date | string
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: number
   clerkId: string
   email: string
-  name?: string | null
+  firstName?: string | null
+  lastName?: string | null
   username: string
   createdAt?: Date | string
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
   clerkId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   clerkId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: number
   clerkId: string
   email: string
-  name?: string | null
+  firstName?: string | null
+  lastName?: string | null
   username: string
   createdAt?: Date | string
 }
@@ -319,7 +378,8 @@ export type UserCreateManyInput = {
 export type UserUpdateManyMutationInput = {
   clerkId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -328,7 +388,8 @@ export type UserUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   clerkId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -337,7 +398,8 @@ export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   clerkId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -350,7 +412,8 @@ export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   clerkId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -359,13 +422,19 @@ export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   clerkId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -388,22 +457,624 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type UserCreateNestedOneWithoutSubscriptionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubscriptionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSubscriptionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubscriptionInput
+  upsert?: Prisma.UserUpsertWithoutSubscriptionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubscriptionInput, Prisma.UserUpdateWithoutSubscriptionInput>, Prisma.UserUncheckedUpdateWithoutSubscriptionInput>
+}
+
+export type UserCreateNestedOneWithoutBlogPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlogPostsInput, Prisma.UserUncheckedCreateWithoutBlogPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlogPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBlogPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlogPostsInput, Prisma.UserUncheckedCreateWithoutBlogPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlogPostsInput
+  upsert?: Prisma.UserUpsertWithoutBlogPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBlogPostsInput, Prisma.UserUpdateWithoutBlogPostsInput>, Prisma.UserUncheckedUpdateWithoutBlogPostsInput>
+}
+
+export type UserCreateNestedOneWithoutResumesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutResumesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput
+  upsert?: Prisma.UserUpsertWithoutResumesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResumesInput, Prisma.UserUpdateWithoutResumesInput>, Prisma.UserUncheckedUpdateWithoutResumesInput>
+}
+
+export type UserCreateNestedOneWithoutCodeExplanationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodeExplanationsInput, Prisma.UserUncheckedCreateWithoutCodeExplanationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodeExplanationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCodeExplanationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodeExplanationsInput, Prisma.UserUncheckedCreateWithoutCodeExplanationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodeExplanationsInput
+  upsert?: Prisma.UserUpsertWithoutCodeExplanationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCodeExplanationsInput, Prisma.UserUpdateWithoutCodeExplanationsInput>, Prisma.UserUncheckedUpdateWithoutCodeExplanationsInput>
+}
+
+export type UserCreateNestedOneWithoutBugFixesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBugFixesInput, Prisma.UserUncheckedCreateWithoutBugFixesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBugFixesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBugFixesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBugFixesInput, Prisma.UserUncheckedCreateWithoutBugFixesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBugFixesInput
+  upsert?: Prisma.UserUpsertWithoutBugFixesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBugFixesInput, Prisma.UserUpdateWithoutBugFixesInput>, Prisma.UserUncheckedUpdateWithoutBugFixesInput>
+}
+
+export type UserCreateNestedOneWithoutChatSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChatSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatSessionsInput
+  upsert?: Prisma.UserUpsertWithoutChatSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChatSessionsInput, Prisma.UserUpdateWithoutChatSessionsInput>, Prisma.UserUncheckedUpdateWithoutChatSessionsInput>
+}
+
+export type UserCreateWithoutSubscriptionInput = {
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  blogPosts?: Prisma.BlogPostCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSubscriptionInput = {
+  id?: number
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  blogPosts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSubscriptionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
+}
+
+export type UserUpsertWithoutSubscriptionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSubscriptionInput, Prisma.UserUncheckedUpdateWithoutSubscriptionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionInput, Prisma.UserUncheckedCreateWithoutSubscriptionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSubscriptionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSubscriptionInput, Prisma.UserUncheckedUpdateWithoutSubscriptionInput>
+}
+
+export type UserUpdateWithoutSubscriptionInput = {
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blogPosts?: Prisma.BlogPostUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSubscriptionInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blogPosts?: Prisma.BlogPostUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBlogPostsInput = {
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBlogPostsInput = {
+  id?: number
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBlogPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlogPostsInput, Prisma.UserUncheckedCreateWithoutBlogPostsInput>
+}
+
+export type UserUpsertWithoutBlogPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBlogPostsInput, Prisma.UserUncheckedUpdateWithoutBlogPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlogPostsInput, Prisma.UserUncheckedCreateWithoutBlogPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBlogPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBlogPostsInput, Prisma.UserUncheckedUpdateWithoutBlogPostsInput>
+}
+
+export type UserUpdateWithoutBlogPostsInput = {
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBlogPostsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutResumesInput = {
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutResumesInput = {
+  id?: number
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutResumesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+}
+
+export type UserUpsertWithoutResumesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutResumesInput, Prisma.UserUncheckedUpdateWithoutResumesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutResumesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutResumesInput, Prisma.UserUncheckedUpdateWithoutResumesInput>
+}
+
+export type UserUpdateWithoutResumesInput = {
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutResumesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUncheckedUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCodeExplanationsInput = {
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCodeExplanationsInput = {
+  id?: number
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCodeExplanationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodeExplanationsInput, Prisma.UserUncheckedCreateWithoutCodeExplanationsInput>
+}
+
+export type UserUpsertWithoutCodeExplanationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCodeExplanationsInput, Prisma.UserUncheckedUpdateWithoutCodeExplanationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodeExplanationsInput, Prisma.UserUncheckedCreateWithoutCodeExplanationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCodeExplanationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCodeExplanationsInput, Prisma.UserUncheckedUpdateWithoutCodeExplanationsInput>
+}
+
+export type UserUpdateWithoutCodeExplanationsInput = {
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCodeExplanationsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBugFixesInput = {
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBugFixesInput = {
+  id?: number
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBugFixesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBugFixesInput, Prisma.UserUncheckedCreateWithoutBugFixesInput>
+}
+
+export type UserUpsertWithoutBugFixesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBugFixesInput, Prisma.UserUncheckedUpdateWithoutBugFixesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBugFixesInput, Prisma.UserUncheckedCreateWithoutBugFixesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBugFixesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBugFixesInput, Prisma.UserUncheckedUpdateWithoutBugFixesInput>
+}
+
+export type UserUpdateWithoutBugFixesInput = {
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBugFixesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChatSessionsInput = {
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChatSessionsInput = {
+  id?: number
+  clerkId: string
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  username: string
+  createdAt?: Date | string
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  blogPosts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedCreateNestedManyWithoutUserInput
+  bugFixes?: Prisma.BugFixUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChatSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+}
+
+export type UserUpsertWithoutChatSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChatSessionsInput, Prisma.UserUncheckedUpdateWithoutChatSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChatSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChatSessionsInput, Prisma.UserUncheckedUpdateWithoutChatSessionsInput>
+}
+
+export type UserUpdateWithoutChatSessionsInput = {
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChatSessionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  blogPosts?: Prisma.BlogPostUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  codeExplanations?: Prisma.CodeExplanationUncheckedUpdateManyWithoutUserNestedInput
+  bugFixes?: Prisma.BugFixUncheckedUpdateManyWithoutUserNestedInput
+}
+
+
+/**
+ * Count Type UserCountOutputType
+ */
+
+export type UserCountOutputType = {
+  blogPosts: number
+  resumes: number
+  codeExplanations: number
+  bugFixes: number
+  chatSessions: number
+}
+
+export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  blogPosts?: boolean | UserCountOutputTypeCountBlogPostsArgs
+  resumes?: boolean | UserCountOutputTypeCountResumesArgs
+  codeExplanations?: boolean | UserCountOutputTypeCountCodeExplanationsArgs
+  bugFixes?: boolean | UserCountOutputTypeCountBugFixesArgs
+  chatSessions?: boolean | UserCountOutputTypeCountChatSessionsArgs
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserCountOutputType
+   */
+  select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBlogPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BlogPostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResumesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCodeExplanationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CodeExplanationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBugFixesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BugFixWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatSessionWhereInput
+}
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   clerkId?: boolean
   email?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   username?: boolean
   createdAt?: boolean
+  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
+  blogPosts?: boolean | Prisma.User$blogPostsArgs<ExtArgs>
+  resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
+  codeExplanations?: boolean | Prisma.User$codeExplanationsArgs<ExtArgs>
+  bugFixes?: boolean | Prisma.User$bugFixesArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.User$chatSessionsArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   clerkId?: boolean
   email?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   username?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -412,7 +1083,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   clerkId?: boolean
   email?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   username?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -421,21 +1093,41 @@ export type UserSelectScalar = {
   id?: boolean
   clerkId?: boolean
   email?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   username?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "name" | "username" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "firstName" | "lastName" | "username" | "createdAt", ExtArgs["result"]["user"]>
+export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
+  blogPosts?: boolean | Prisma.User$blogPostsArgs<ExtArgs>
+  resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
+  codeExplanations?: boolean | Prisma.User$codeExplanationsArgs<ExtArgs>
+  bugFixes?: boolean | Prisma.User$bugFixesArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.User$chatSessionsArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
-  objects: {}
+  objects: {
+    subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
+    blogPosts: Prisma.$BlogPostPayload<ExtArgs>[]
+    resumes: Prisma.$ResumePayload<ExtArgs>[]
+    codeExplanations: Prisma.$CodeExplanationPayload<ExtArgs>[]
+    bugFixes: Prisma.$BugFixPayload<ExtArgs>[]
+    chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     clerkId: string
     email: string
-    name: string | null
+    firstName: string | null
+    lastName: string | null
     username: string
     createdAt: Date
   }, ExtArgs["result"]["user"]>
@@ -832,6 +1524,12 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  subscription<T extends Prisma.User$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  blogPosts<T extends Prisma.User$blogPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blogPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlogPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  resumes<T extends Prisma.User$resumesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  codeExplanations<T extends Prisma.User$codeExplanationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codeExplanationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodeExplanationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bugFixes<T extends Prisma.User$bugFixesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bugFixesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BugFixPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatSessions<T extends Prisma.User$chatSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -864,7 +1562,8 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'Int'>
   readonly clerkId: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
-  readonly name: Prisma.FieldRef<"User", 'String'>
+  readonly firstName: Prisma.FieldRef<"User", 'String'>
+  readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -884,6 +1583,10 @@ export type UserFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -902,6 +1605,10 @@ export type UserFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -919,6 +1626,10 @@ export type UserFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which User to fetch.
    */
@@ -968,6 +1679,10 @@ export type UserFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where?: Prisma.UserWhereInput
@@ -1016,6 +1731,10 @@ export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which Users to fetch.
    */
   where?: Prisma.UserWhereInput
@@ -1058,6 +1777,10 @@ export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * The data needed to create a User.
    */
@@ -1106,6 +1829,10 @@ export type UserUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * The data needed to update a User.
    */
@@ -1173,6 +1900,10 @@ export type UserUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * The filter to search for the User to update in case it exists.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1199,6 +1930,10 @@ export type UserDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter which User to delete.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1219,6 +1954,145 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * User.subscription
+ */
+export type User$subscriptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Subscription
+   */
+  select?: Prisma.SubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Subscription
+   */
+  omit?: Prisma.SubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubscriptionInclude<ExtArgs> | null
+  where?: Prisma.SubscriptionWhereInput
+}
+
+/**
+ * User.blogPosts
+ */
+export type User$blogPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BlogPost
+   */
+  select?: Prisma.BlogPostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BlogPost
+   */
+  omit?: Prisma.BlogPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlogPostInclude<ExtArgs> | null
+  where?: Prisma.BlogPostWhereInput
+  orderBy?: Prisma.BlogPostOrderByWithRelationInput | Prisma.BlogPostOrderByWithRelationInput[]
+  cursor?: Prisma.BlogPostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BlogPostScalarFieldEnum | Prisma.BlogPostScalarFieldEnum[]
+}
+
+/**
+ * User.resumes
+ */
+export type User$resumesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Resume
+   */
+  select?: Prisma.ResumeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Resume
+   */
+  omit?: Prisma.ResumeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeInclude<ExtArgs> | null
+  where?: Prisma.ResumeWhereInput
+  orderBy?: Prisma.ResumeOrderByWithRelationInput | Prisma.ResumeOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeScalarFieldEnum | Prisma.ResumeScalarFieldEnum[]
+}
+
+/**
+ * User.codeExplanations
+ */
+export type User$codeExplanationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CodeExplanation
+   */
+  select?: Prisma.CodeExplanationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CodeExplanation
+   */
+  omit?: Prisma.CodeExplanationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CodeExplanationInclude<ExtArgs> | null
+  where?: Prisma.CodeExplanationWhereInput
+  orderBy?: Prisma.CodeExplanationOrderByWithRelationInput | Prisma.CodeExplanationOrderByWithRelationInput[]
+  cursor?: Prisma.CodeExplanationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CodeExplanationScalarFieldEnum | Prisma.CodeExplanationScalarFieldEnum[]
+}
+
+/**
+ * User.bugFixes
+ */
+export type User$bugFixesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BugFix
+   */
+  select?: Prisma.BugFixSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BugFix
+   */
+  omit?: Prisma.BugFixOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BugFixInclude<ExtArgs> | null
+  where?: Prisma.BugFixWhereInput
+  orderBy?: Prisma.BugFixOrderByWithRelationInput | Prisma.BugFixOrderByWithRelationInput[]
+  cursor?: Prisma.BugFixWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BugFixScalarFieldEnum | Prisma.BugFixScalarFieldEnum[]
+}
+
+/**
+ * User.chatSessions
+ */
+export type User$chatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatSession
+   */
+  select?: Prisma.ChatSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatSession
+   */
+  omit?: Prisma.ChatSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatSessionInclude<ExtArgs> | null
+  where?: Prisma.ChatSessionWhereInput
+  orderBy?: Prisma.ChatSessionOrderByWithRelationInput | Prisma.ChatSessionOrderByWithRelationInput[]
+  cursor?: Prisma.ChatSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatSessionScalarFieldEnum | Prisma.ChatSessionScalarFieldEnum[]
+}
+
+/**
  * User without action
  */
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1230,4 +2104,8 @@ export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
 }

@@ -51,7 +51,13 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  Subscription: 'Subscription',
+  BlogPost: 'BlogPost',
+  Resume: 'Resume',
+  CodeExplanation: 'CodeExplanation',
+  BugFix: 'BugFix',
+  ChatSession: 'ChatSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,12 +80,94 @@ export const UserScalarFieldEnum = {
   id: 'id',
   clerkId: 'clerkId',
   email: 'email',
-  name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
   username: 'username',
   createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stripeId: 'stripeId',
+  status: 'status',
+  priceId: 'priceId',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const BlogPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  topic: 'topic',
+  tone: 'tone',
+  length: 'length',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type BlogPostScalarFieldEnum = (typeof BlogPostScalarFieldEnum)[keyof typeof BlogPostScalarFieldEnum]
+
+
+export const ResumeScalarFieldEnum = {
+  id: 'id',
+  jobTitle: 'jobTitle',
+  experience: 'experience',
+  skills: 'skills',
+  output: 'output',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
+export const CodeExplanationScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  language: 'language',
+  explanation: 'explanation',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type CodeExplanationScalarFieldEnum = (typeof CodeExplanationScalarFieldEnum)[keyof typeof CodeExplanationScalarFieldEnum]
+
+
+export const BugFixScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  language: 'language',
+  issue: 'issue',
+  fix: 'fix',
+  explanation: 'explanation',
+  createdAt: 'createdAt',
+  userId: 'userId'
+} as const
+
+export type BugFixScalarFieldEnum = (typeof BugFixScalarFieldEnum)[keyof typeof BugFixScalarFieldEnum]
+
+
+export const ChatSessionScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  messages: 'messages',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+} as const
+
+export type ChatSessionScalarFieldEnum = (typeof ChatSessionScalarFieldEnum)[keyof typeof ChatSessionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -88,6 +176,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -104,4 +199,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

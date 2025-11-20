@@ -1,4 +1,6 @@
+"use client"
 
+import * as React from "react"
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { 
@@ -8,6 +10,7 @@ import {
   SignUpButton, 
   UserButton 
 } from "@clerk/nextjs";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Navigation() {
   return (
@@ -25,6 +28,9 @@ export default function Navigation() {
       </div>
       
       <div className="flex items-center gap-3">
+        {/* Theme Toggle */}
+        <ModeToggle />
+        
         <SignedOut>
           <SignInButton mode="modal">
             <button className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium text-sm sm:text-base px-4 py-2 cursor-pointer">

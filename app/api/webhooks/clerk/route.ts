@@ -1,67 +1,57 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { prisma } from "@/lib/prisma"; // your prisma instance
+import { prisma } from "@/lib/prisma";
 
-// Define types for Clerk webhook events
 interface ClerkWebhookEvent {
   type: string;
   data: {
     id: string;
-    email_addresses: Array<{
-      email_address: string;
-    }>;
+    email_addresses: { email_address: string }[];
     first_name: string;
-    // Add other properties as needed
+    image_url?: string;
   };
 }
 
 export async function POST(req: Request) {
-  const SIGNING_SECRET = process.env.CLERK_WEBHOOK_SECRET;
-
-  if (!SIGNING_SECRET) {
-    throw new Error("Missing Clerk webhook secret");
-  }
-
+  const SIGNING_SECRET = process.env.CLERK_WEBHOOK_SECRET!;
   const payload = await req.text();
-  const headerPayload = headers();
-  const svix_id = (await headerPayload).get("svix-id")!;
-  const svix_timestamp = (await headerPayload).get("svix-timestamp")!;
-  const svix_signature = (await headerPayload).get("svix-signature")!;
+
+  const headerPayload = await headers();
+  const svix_id = headerPayload.get("svix-id")!;
+  const svix_timestamp = headerPayload.get("svix-timestamp")!;
+  const svix_signature = headerPayload.get("svix-signature")!;
 
   const wh = new Webhook(SIGNING_SECRET);
 
   let event: ClerkWebhookEvent;
-
   try {
     event = wh.verify(payload, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature
+      "svix-signature": svix_signature,
     }) as ClerkWebhookEvent;
   } catch (error) {
-    console.error(error);
-    return new Response("Error verifying webhook", { status: 400 });
+    console.error("Webhook verification failed", error);
+    return new Response("Invalid signature", { status: 400 });
   }
 
-  const evtType = event.type;
+  const data = event.data;
 
-  // CREATE USER
-  if (evtType === "user.created") {
-    const data = event.data;
-
-    await prisma.user.create({
-      data: {
+  if (event.type === "user.created") {
+    await prisma.user.upsert({
+      where: { clerkId: data.id },
+      update: {}, // no-op if exists
+      create: {
         clerkId: data.id,
         email: data.email_addresses[0].email_address,
         name: data.first_name,
-      }
+      },
     });
   }
 
-  // DELETE USER
-  if (evtType === "user.deleted") {
-    await prisma.user.delete({
-      where: { clerkId: event.data.id }
+  if (event.type === "user.deleted") {
+    await prisma.user.deleteMany({
+      where: { clerkId: data.id },
     });
   }
 

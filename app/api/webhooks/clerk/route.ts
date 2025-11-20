@@ -8,7 +8,8 @@ interface ClerkWebhookEvent {
     id: string;
     email_addresses: { email_address: string }[];
     first_name: string;
-    image_url?: string;
+    last_name: string;
+    username: string;
   };
 }
 
@@ -44,7 +45,8 @@ export async function POST(req: Request) {
       create: {
         clerkId: data.id,
         email: data.email_addresses[0].email_address,
-        name: data.first_name,
+        name: `${data.first_name} ${data.last_name}`,
+        username: data.username,
       },
     });
   }

@@ -39,7 +39,8 @@ export async function POST(req: Request) {
 
   const data = event.data;
 
-  if (event.type === "user.created") {
+  try {
+      if (event.type === "user.created") {
    await prisma.user.upsert({
   where: { clerkId: data.id },
   update: {}, // no-op if exists
@@ -53,6 +54,11 @@ export async function POST(req: Request) {
   },
 });
   }
+  } catch (error) {
+    console.error("Error upserting user", error);
+  }
+
+
 
   if (event.type === "user.deleted") {
     await prisma.user.deleteMany({

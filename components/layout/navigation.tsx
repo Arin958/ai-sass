@@ -42,7 +42,7 @@ export default function Navigation() {
         <SignedOut>
           <SignInButton
             mode="modal"
-            fallbackRedirectUrl="/tools"  
+         
           >
             <button className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium text-sm sm:text-base px-4 py-2 cursor-pointer">
               Sign In
@@ -51,7 +51,7 @@ export default function Navigation() {
 
           <SignUpButton
             mode="modal"
-            fallbackRedirectUrl="/tools" 
+       
           >
             <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer hover:bg-[#5a3fe0] transition-colors">
               Sign Up
@@ -66,7 +66,7 @@ export default function Navigation() {
                 avatarBox: "h-8 w-8",
               },
             }}
-            afterSignOutUrl="/"
+       
           />
         </SignedIn>
       </div>

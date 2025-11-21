@@ -79,7 +79,9 @@ export default function AIDashboard() {
     if (toolId === "blog-generator") {
       router.push("/tools/blog-generator")
     } else if (toolId === "resume-generator") {
-      router.push("/resume-generator")
+      router.push("/tools/resume-generator")
+    } else if(toolId === "code-assistant") {
+      router.push("/tools/code-assistant")
     }
     // Add routes for other tools
   }

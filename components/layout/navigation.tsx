@@ -12,6 +12,7 @@ import {
   UserButton 
 } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/mode-toggle";
+import { redirect } from "next/navigation";
 
 export default function Navigation() {
 
@@ -34,7 +35,7 @@ export default function Navigation() {
         <ModeToggle />
 
         {userId && (
-          <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer hover:bg-[#5a3fe0] transition-colors">
+          <button onClick={() => redirect("/tools")} className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer hover:bg-[#5a3fe0] transition-colors">
             Tools
           </button>
         )}

@@ -107,3 +107,90 @@ Important:
     "Failed to generate resume content."
   );
 }
+
+export async function generateCodeAssistant(
+  code: string,
+  language: string,
+  mode: "write" | "debug" | "optimize"
+) {
+  const modePrompts = {
+    write: `
+You are an advanced AI coding assistant.
+
+Task:
+- Rewrite or complete the given code.
+- Improve structure, readability, and best practices.
+- Add missing logic if needed.
+- Use modern ${language} conventions.
+
+Return ONLY the improved code in a clean block.
+`,
+
+    debug: `
+You are an expert software engineer and debugger.
+
+Task:
+- Analyze the given ${language} code.
+- Identify ALL bugs, errors, weaknesses, or potential failures.
+- Explain the problems clearly.
+- Provide the fixed version of the code.
+
+Return these sections:
+## Issues Found
+(list problems)
+
+## Explanation
+(why they happen)
+
+## Fixed Code
+(code block)
+`,
+
+    optimize: `
+You are a senior performance engineer.
+
+Task:
+- Optimize the provided ${language} code.
+- Improve speed, memory usage, readability, or structure.
+- Remove unnecessary operations.
+- Suggest better patterns.
+
+Return these sections:
+## Optimization Summary
+## Why It Matters
+## Optimized Code
+`,
+  };
+
+  const systemPrompt = `
+You are an expert AI coding assistant.  
+You write clean, modern, well-structured ${language} code.  
+Always be clear, accurate, and helpful.
+`;
+
+  const userPrompt = `
+Mode: ${mode.toUpperCase()}
+Language: ${language}
+
+User Code:
+\`\`\`${language}
+${code}
+\`\`\`
+
+${modePrompts[mode]}
+`;
+
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    temperature: 0.4,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  });
+
+  return (
+    completion.choices?.[0]?.message?.content ??
+    "AI failed to generate output."
+  );
+}

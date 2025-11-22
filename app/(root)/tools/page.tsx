@@ -82,6 +82,14 @@ export default function AIDashboard() {
       router.push("/tools/resume-generator")
     } else if(toolId === "code-assistant") {
       router.push("/tools/code-assistant")
+    } else if(toolId === "ai-chat") {
+      router.push("/tools/ai-chat")
+    } else if(toolId === "explainer-bug-finder") {
+      router.push("/tools/explainer-bug-finder")
+    } else if(toolId === "ai-templates") {
+      router.push("/tools/ai-templates")
+    } else {
+      router.push("/tools")
     }
     // Add routes for other tools
   }

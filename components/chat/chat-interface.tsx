@@ -20,6 +20,7 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
   const [isLoadingHistory, setIsLoadingHistory] = useState(true)
   const [currentSessionId, setCurrentSessionId] = useState(sessionId)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Load chat history when component mounts or sessionId changes
   useEffect(() => {
@@ -50,12 +51,24 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
     loadChatHistory()
   }, [currentSessionId])
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when messages change or when loading state changes
   useEffect(() => {
-    if (scrollAreaRef.current && !isLoadingHistory) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
-  }, [messages, isLoadingHistory])
+    scrollToBottom()
+  }, [messages, isLoading, isLoadingHistory])
+
+  const scrollToBottom = () => {
+    // Use setTimeout to ensure the DOM has updated
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ 
+          behavior: "smooth",
+          block: "end" 
+        })
+      } else if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+      }
+    }, 100)
+  }
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = { role: "user", content }
@@ -122,7 +135,7 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
               <span className="text-sm font-semibold text-primary-foreground">D</span>
             </div>
             <div>
-              <h1 className="text-lg font-semibold">DeepSeek Chat</h1>
+              <h1 className="text-lg font-semibold">NovaChat</h1>
               <p className="text-sm text-muted-foreground">
                 {currentSessionId ? "Continuing conversation" : "New conversation"}
               </p>
@@ -149,14 +162,18 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
               </div>
             </div>
           ) : (
-            messages.map((message, index) => (
-              <ChatMessage
-                key={index}
-                role={message.role}
-                content={message.content}
-                isStreaming={isLoading && index === messages.length - 1 && message.role === "assistant"}
-              />
-            ))
+            <>
+              {messages.map((message, index) => (
+                <ChatMessage
+                  key={index}
+                  role={message.role}
+                  content={message.content}
+                  isStreaming={isLoading && index === messages.length - 1 && message.role === "assistant"}
+                />
+              ))}
+              {/* Invisible element at the end for scrolling */}
+              <div ref={messagesEndRef} />
+            </>
           )}
         </div>
       </ScrollArea>

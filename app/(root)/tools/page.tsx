@@ -83,7 +83,7 @@ export default function AIDashboard() {
     } else if(toolId === "code-assistant") {
       router.push("/tools/code-assistant")
     } else if(toolId === "ai-chat") {
-      router.push("/tools/ai-chat")
+      router.push("/tools/chat")
     } else if(toolId === "explainer-bug-finder") {
       router.push("/tools/explainer-bug-finder")
     } else if(toolId === "ai-templates") {

@@ -1,5 +1,5 @@
 import { groq } from "./groq";
-
+import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat/completions";
 
 export async function generateWithAI(topic: string, tone: string, length: string) {
   const lengthMap = {
@@ -194,3 +194,45 @@ ${modePrompts[mode]}
     "AI failed to generate output."
   );
 }
+
+
+
+
+
+export async function generateChatReply(
+  messages: Array<{ role: "user" | "assistant"; content: string }>
+) {
+  // System message (always injected)
+  const systemPrompt: ChatCompletionMessageParam = {
+    role: "system",
+    content: `
+You are an intelligent AI assistant.
+You help users with coding, writing, problem-solving, and general conversation.
+Your tone should be friendly, helpful, and highly knowledgeable.
+Keep answers clear, structured, factual, and accurate.
+Avoid hallucinations and provide only reliable answers.
+    `.trim(),
+  };
+
+  // Convert incoming messages to valid ChatCompletionMessageParam[]
+  const formattedMessages: ChatCompletionMessageParam[] = [
+    systemPrompt,
+    ...messages.map((msg) => ({
+      role: msg.role,
+      content: msg.content,
+    })),
+  ];
+
+  // Create completion
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    temperature: 0.4,
+    messages: formattedMessages,
+  });
+
+  return (
+    completion.choices?.[0]?.message?.content ??
+    "Failed to generate chat response."
+  );
+}
+

@@ -69,7 +69,7 @@ export function ChatSessions() {
     <div className="w-80 border-r bg-background/95 p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Chat History</h2>
-        <Link href="/chat">
+        <Link href="/tools/chat">
           <Button variant="outline" size="sm">
             <Plus className="h-4 w-4 mr-1" />
             New Chat

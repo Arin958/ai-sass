@@ -32,7 +32,12 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
 
       try {
         setIsLoadingHistory(true)
-        const response = await fetch(`/api/tools/chat?sessionId=${currentSessionId}`)
+        const response = await fetch(`/api/tools/chat?sessionId=${currentSessionId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
         
         if (!response.ok) {
           throw new Error("Failed to load chat history")

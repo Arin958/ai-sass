@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Plus, MessageSquare, Calendar } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 interface ChatSession {
   id: string
@@ -17,26 +18,25 @@ export function ChatSessions() {
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const response = await fetch('/api/tools/chat')
-        
-        if (!response.ok) {
-          throw new Error("Failed to load sessions")
-        }
+const searchParams = useSearchParams();
 
-        const data = await response.json()
-        setSessions(data.sessions || [])
-      } catch (error) {
-        console.error("Error loading sessions:", error)
-      } finally {
-        setIsLoading(false)
-      }
+useEffect(() => {
+  const loadSessions = async () => {
+    try {
+      const response = await fetch('/api/tools/chat')
+      if (!response.ok) throw new Error("Failed to load sessions")
+
+      const data = await response.json()
+      setSessions(data.sessions || [])
+    } catch (error) {
+      console.error("Error loading sessions:", error)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    loadSessions()
-  }, [])
+  loadSessions()
+}, [searchParams])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)

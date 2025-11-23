@@ -1,11 +1,7 @@
-import { ChatInterface } from "@/components/chat/chat-interface"
+import { ChatInterface } from "@/components/chat/chat-interface";
 
-interface ChatPageProps {
-  searchParams: {
-    sessionId?: string
-  }
-}
+export default async function ChatPage(props: { searchParams: Promise<{ sessionId?: string }> }) {
+  const { sessionId } = await props.searchParams;
 
-export default function ChatPage({ searchParams }: ChatPageProps) {
-  return <ChatInterface sessionId={searchParams.sessionId} />
+  return <ChatInterface sessionId={sessionId} />;
 }

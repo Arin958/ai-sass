@@ -56,6 +56,10 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
     loadChatHistory()
   }, [currentSessionId])
 
+  useEffect(() => {
+  setCurrentSessionId(sessionId)
+}, [sessionId])
+
   // Auto-scroll to bottom when messages change or when loading state changes
   useEffect(() => {
     scrollToBottom()

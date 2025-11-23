@@ -11,21 +11,51 @@ export interface Message {
 }
 
 interface ChatInterfaceProps {
-  initialMessages?: Message[]
   sessionId?: string
 }
 
-export function ChatInterface({ initialMessages = [], sessionId }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+export function ChatInterface({ sessionId }: ChatInterfaceProps) {
+  const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true)
+  const [currentSessionId, setCurrentSessionId] = useState(sessionId)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+
+  // Load chat history when component mounts or sessionId changes
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      if (!currentSessionId) {
+        setIsLoadingHistory(false)
+        return
+      }
+
+      try {
+        setIsLoadingHistory(true)
+        const response = await fetch(`/api/tools/chat?sessionId=${currentSessionId}`)
+        
+        if (!response.ok) {
+          throw new Error("Failed to load chat history")
+        }
+
+        const data = await response.json()
+        setMessages(data.messages || [])
+      } catch (error) {
+        console.error("Error loading chat history:", error)
+        setMessages([])
+      } finally {
+        setIsLoadingHistory(false)
+      }
+    }
+
+    loadChatHistory()
+  }, [currentSessionId])
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    if (scrollAreaRef.current) {
+    if (scrollAreaRef.current && !isLoadingHistory) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
-  }, [messages])
+  }, [messages, isLoadingHistory])
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = { role: "user", content }
@@ -40,7 +70,7 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sessionId,
+          sessionId: currentSessionId,
           messages: [userMessage],
         }),
       })
@@ -51,11 +81,13 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
 
       const data = await response.json()
       
-      // Use the messages returned from the API to avoid duplicates
-      setMessages(data.messages || [...messages, userMessage, {
-        role: "assistant",
-        content: data.reply
-      }])
+      // Update session ID if this is a new session
+      if (!currentSessionId && data.sessionId) {
+        setCurrentSessionId(data.sessionId)
+      }
+      
+      // Use the messages returned from the API
+      setMessages(data.messages || [])
     } catch (error) {
       console.error("Error sending message:", error)
       
@@ -69,6 +101,17 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
     }
   }
 
+  if (isLoadingHistory) {
+    return (
+      <div className="flex flex-col h-screen bg-background items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading chat history...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
@@ -79,9 +122,9 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
               <span className="text-sm font-semibold text-primary-foreground">D</span>
             </div>
             <div>
-              <h1 className="text-lg font-semibold">NovaChat</h1>
+              <h1 className="text-lg font-semibold">DeepSeek Chat</h1>
               <p className="text-sm text-muted-foreground">
-                AI-powered conversations
+                {currentSessionId ? "Continuing conversation" : "New conversation"}
               </p>
             </div>
           </div>
@@ -96,7 +139,7 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
               <div className="text-center space-y-4 max-w-md">
                 <div className="flex justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                    <span className="text-2xl font-bold text-primary">D</span>
+                    <span className="text-2xl font-bold text-primary">N</span>
                   </div>
                 </div>
                 <h2 className="text-2xl font-bold">Welcome to NovaChat</h2>

@@ -1,5 +1,11 @@
 import { ChatInterface } from "@/components/chat/chat-interface"
 
-export default function ChatPage() {
-  return <ChatInterface />
+interface ChatPageProps {
+  searchParams: {
+    sessionId?: string
+  }
+}
+
+export default function ChatPage({ searchParams }: ChatPageProps) {
+  return <ChatInterface sessionId={searchParams.sessionId} />
 }

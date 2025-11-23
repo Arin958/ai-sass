@@ -156,3 +156,77 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 }
+
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  try {
+    // -----------------------------
+    // 1. Verify authenticated user
+    // -----------------------------
+    const user = await currentUser();
+    if (!user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // -----------------------------
+    // 2. Fetch DB user
+    // -----------------------------
+    const dbUser = await prisma.user.findUnique({
+      where: { clerkId: user.id },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // -----------------------------
+    // 3. Get session ID from query params
+    // -----------------------------
+    const { searchParams } = new URL(request.url);
+    const sessionId = searchParams.get('sessionId');
+
+    if (sessionId) {
+      // Fetch specific chat session
+      const chatSession = await prisma.chatSession.findUnique({
+        where: { 
+          id: sessionId, 
+          userId: dbUser.id 
+        },
+      });
+
+      if (!chatSession) {
+        return NextResponse.json({ error: "Chat session not found" }, { status: 404 });
+      }
+
+      const messages = parseDatabaseMessages(chatSession.messages);
+
+      return NextResponse.json({
+        sessionId: chatSession.id,
+        messages,
+        title: chatSession.title,
+      });
+    } else {
+      // Fetch all chat sessions for the user
+      const chatSessions = await prisma.chatSession.findMany({
+        where: { userId: dbUser.id },
+        orderBy: { updatedAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          updatedAt: true,
+          createdAt: true,
+        },
+      });
+
+      return NextResponse.json({
+        sessions: chatSessions,
+      });
+    }
+  } catch (error) {
+    console.error("Chat API GET error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

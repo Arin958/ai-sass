@@ -87,7 +87,7 @@ export function ChatSessions() {
             </div>
           ) : (
             sessions.map((session) => (
-              <Link key={session.id} href={`/chat?sessionId=${session.id}`}>
+              <Link key={session.id} href={`/tools/chat?sessionId=${session.id}`}>
                 <div className="p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">

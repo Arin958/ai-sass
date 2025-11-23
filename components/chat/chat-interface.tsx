@@ -35,7 +35,7 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/tools/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

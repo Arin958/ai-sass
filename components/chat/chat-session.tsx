@@ -20,7 +20,7 @@ export function ChatSessions() {
   useEffect(() => {
     const loadSessions = async () => {
       try {
-        const response = await fetch('/api/chat')
+        const response = await fetch('/api/tools/chat')
         
         if (!response.ok) {
           throw new Error("Failed to load sessions")

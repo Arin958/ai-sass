@@ -33,7 +33,7 @@ export function ChatMessage({ role, content, isStreaming = false }: ChatMessageP
       <div className="flex-1 space-y-2 overflow-hidden">
         <div className="flex items-center space-x-2">
           <span className="text-sm font-semibold">
-            {isUser ? "You" : "DeepSeek"}
+            {isUser ? "You" : "NovaChat"}
           </span>
         </div>
         

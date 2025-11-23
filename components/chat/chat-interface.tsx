@@ -29,9 +29,8 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = { role: "user", content }
-    const updatedMessages = [...messages, userMessage]
     
-    setMessages(updatedMessages)
+    // Don't add to state yet - wait for API response
     setIsLoading(true)
 
     try {
@@ -52,15 +51,16 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
 
       const data = await response.json()
       
-      setMessages(data.messages || [...updatedMessages, {
+      // Use the messages returned from the API to avoid duplicates
+      setMessages(data.messages || [...messages, userMessage, {
         role: "assistant",
         content: data.reply
       }])
     } catch (error) {
       console.error("Error sending message:", error)
       
-      // Add error message
-      setMessages(prev => [...prev, {
+      // Add error message only if API fails
+      setMessages(prev => [...prev, userMessage, {
         role: "assistant",
         content: "Sorry, I encountered an error. Please try again."
       }])
@@ -79,7 +79,7 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
               <span className="text-sm font-semibold text-primary-foreground">D</span>
             </div>
             <div>
-              <h1 className="text-lg font-semibold">DeepSeek Chat</h1>
+              <h1 className="text-lg font-semibold">NovaChat</h1>
               <p className="text-sm text-muted-foreground">
                 AI-powered conversations
               </p>
@@ -99,7 +99,7 @@ export function ChatInterface({ initialMessages = [], sessionId }: ChatInterface
                     <span className="text-2xl font-bold text-primary">D</span>
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold">Welcome to DeepSeek</h2>
+                <h2 className="text-2xl font-bold">Welcome to NovaChat</h2>
                 <p className="text-muted-foreground">
                   Start a conversation by typing a message below. I&apos;m here to help with your questions!
                 </p>

@@ -1,5 +1,3 @@
-// app/api/chat/route.ts
-
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -47,7 +45,6 @@ function parseDatabaseMessages(messages: unknown): ChatMessage[] {
     .filter((msg): msg is ChatMessage => msg !== null);
 }
 
-
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // -----------------------------
@@ -62,7 +59,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // 2. Validate incoming request
     // -----------------------------
     const body = await request.json();
-    const { sessionId, messages } = validateChatRequest(body);
+    const { sessionId, messages: newMessages } = validateChatRequest(body);
 
     // -----------------------------
     // 3. Fetch DB user
@@ -86,12 +83,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Create new chat if session does not exist
     if (!chatSession) {
-      const title = messages[0]?.content?.slice(0, 40) || "New Chat";
+      const title = newMessages[0]?.content?.slice(0, 40) || "New Chat";
 
       chatSession = await prisma.chatSession.create({
         data: {
           title,
-          messages: messages as unknown as Prisma.InputJsonValue, // ✔ correct JSON type
+          messages: newMessages as unknown as Prisma.InputJsonValue,
           userId: dbUser.id,
         },
       });
@@ -101,7 +98,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // 5. Merge previous + new messages
     // -----------------------------
     const previousMessages = parseDatabaseMessages(chatSession.messages);
-    const history: ChatMessage[] = [...previousMessages, ...messages];
+    
+    // Check if the last message is already the same as the new one to avoid duplicates
+    const lastPreviousMessage = previousMessages[previousMessages.length - 1];
+    const firstNewMessage = newMessages[0];
+    
+    let history: ChatMessage[];
+    if (lastPreviousMessage && firstNewMessage && 
+        lastPreviousMessage.role === firstNewMessage.role && 
+        lastPreviousMessage.content === firstNewMessage.content) {
+      // If duplicate detected, use only previous messages
+      history = previousMessages;
+    } else {
+      // Otherwise merge normally
+      history = [...previousMessages, ...newMessages];
+    }
 
     // -----------------------------
     // 6. Generate AI reply
@@ -119,7 +130,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await prisma.chatSession.update({
       where: { id: chatSession.id },
       data: {
-        messages: updatedMessages as unknown as Prisma.InputJsonValue, // ✔ fixed
+        messages: updatedMessages as unknown as Prisma.InputJsonValue,
         updatedAt: new Date(),
       },
     });
@@ -130,7 +141,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       sessionId: chatSession.id,
       reply: aiReply,
-      messages: updatedMessages,
+      messages: updatedMessages, // Return all messages including the new ones
     });
   } catch (error) {
     console.error("Chat API error:", error);

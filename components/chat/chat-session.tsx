@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Plus, MessageSquare, Calendar } from "lucide-react"
+import { Plus, MessageSquare, Calendar, X, FileText, Code, PenTool, MessageCircle } from "lucide-react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, usePathname } from "next/navigation"
 
 interface ChatSession {
   id: string
@@ -14,29 +14,41 @@ interface ChatSession {
   createdAt: string
 }
 
-export function ChatSessions() {
+interface ChatSessionsProps {
+  isMobileOpen?: boolean
+  onMobileClose?: () => void
+}
+
+const tools = [
+  { href: "/tools/chat", icon: MessageCircle, label: "AI Chat", isActive: true },
+  { href: "/tools/blog-generator", icon: PenTool, label: "Blog Generator" },
+  { href: "/tools/code-assistant", icon: Code, label: "Code Assistant" },
+  { href: "/tools/resume-generator", icon: FileText, label: "Resume Generator" },
+]
+
+export function ChatSessions({ isMobileOpen = false, onMobileClose }: ChatSessionsProps) {
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
 
-const searchParams = useSearchParams();
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const response = await fetch('/api/tools/chat')
+        if (!response.ok) throw new Error("Failed to load sessions")
 
-useEffect(() => {
-  const loadSessions = async () => {
-    try {
-      const response = await fetch('/api/tools/chat')
-      if (!response.ok) throw new Error("Failed to load sessions")
-
-      const data = await response.json()
-      setSessions(data.sessions || [])
-    } catch (error) {
-      console.error("Error loading sessions:", error)
-    } finally {
-      setIsLoading(false)
+        const data = await response.json()
+        setSessions(data.sessions || [])
+      } catch (error) {
+        console.error("Error loading sessions:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }
 
-  loadSessions()
-}, [searchParams])
+    loadSessions()
+  }, [searchParams])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -47,11 +59,30 @@ useEffect(() => {
     })
   }
 
+  const handleSessionClick = () => {
+    if (onMobileClose) {
+      onMobileClose()
+    }
+  }
+
+  const isActiveTool = (href: string) => {
+    return pathname?.startsWith(href)
+  }
+
   if (isLoading) {
     return (
-      <div className="w-80 border-r bg-background/95 p-4">
+      <div className={`
+        w-80 border-r bg-background/95 p-4
+        lg:block
+        ${isMobileOpen ? 'fixed inset-0 z-40 block' : 'hidden'}
+      `}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Chat History</h2>
+          {onMobileClose && (
+            <Button variant="ghost" size="sm" onClick={onMobileClose} className="lg:hidden">
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
@@ -66,44 +97,85 @@ useEffect(() => {
   }
 
   return (
-    <div className="w-80 border-r bg-background/95 p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Chat History</h2>
-        <Link href="/tools/chat">
-          <Button variant="outline" size="sm">
-            <Plus className="h-4 w-4 mr-1" />
-            New Chat
-          </Button>
-        </Link>
+    <div className={`
+      w-80 border-r bg-background/95 p-4 flex flex-col
+      lg:block
+      ${isMobileOpen ? 'fixed inset-0 z-40 block' : 'hidden'}
+    `}>
+      {/* Tools Navigation */}
+      <div className="mb-6">
+        <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">AI Tools</h3>
+        <div className="space-y-1">
+          {tools.map((tool) => {
+            const Icon = tool.icon
+            const isActive = isActiveTool(tool.href)
+            return (
+              <Link key={tool.href} href={tool.href} onClick={handleSessionClick}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className="w-full justify-start gap-3"
+                  size="sm"
+                >
+                  <Icon className="h-4 w-4" />
+                  {tool.label}
+                </Button>
+              </Link>
+            )
+          })}
+        </div>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-120px)]">
-        <div className="space-y-2">
-          {sessions.length === 0 ? (
-            <div className="text-center p-4 text-muted-foreground">
-              <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p>No chat sessions yet</p>
-              <p className="text-sm">Start a new conversation to begin</p>
-            </div>
-          ) : (
-            sessions.map((session) => (
-              <Link key={session.id} href={`/tools/chat?sessionId=${session.id}`}>
-                <div className="p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{session.title}</p>
-                      <div className="flex items-center text-xs text-muted-foreground mt-1">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {formatDate(session.updatedAt)}
+      {/* Chat History Section */}
+      <div className="flex-1 flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Chat History</h2>
+          <div className="flex items-center gap-2">
+            <Link href="/tools/chat" onClick={handleSessionClick}>
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">New Chat</span>
+              </Button>
+            </Link>
+            {onMobileClose && (
+              <Button variant="ghost" size="sm" onClick={onMobileClose} className="lg:hidden">
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <ScrollArea className="flex-1">
+          <div className="space-y-2">
+            {sessions.length === 0 ? (
+              <div className="text-center p-4 text-muted-foreground">
+                <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>No chat sessions yet</p>
+                <p className="text-sm">Start a new conversation to begin</p>
+              </div>
+            ) : (
+              sessions.map((session) => (
+                <Link 
+                  key={session.id} 
+                  href={`/tools/chat?sessionId=${session.id}`}
+                  onClick={handleSessionClick}
+                >
+                  <div className="p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{session.title}</p>
+                        <div className="flex items-center text-xs text-muted-foreground mt-1">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {formatDate(session.updatedAt)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+                </Link>
+              ))
+            )}
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   )
 }

@@ -81,10 +81,37 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         })
       : null;
 
-    // Create new chat if session does not exist
+    // ---------------------------------------------------------
+    // ⭐ CHANGED: SMART CHAT TITLE GENERATION
+    // ---------------------------------------------------------
     if (!chatSession) {
-      const title = newMessages[0]?.content?.slice(0, 40) || "New Chat";
+      let rawTitle = newMessages[0]?.content || "New Chat";
 
+      // ⭐ If first message is short like "hi", try next message
+      if (rawTitle.length < 12) {
+        rawTitle = newMessages[1]?.content || rawTitle;
+      }
+
+      // ⭐ Pre-trim extract
+      let title = rawTitle.slice(0, 60);
+
+      // ⭐ Try generating a clean topic title via AI
+      try {
+        const aiTitle = await generateChatReply([
+          {
+            role: "user",
+            content: `Create a short (max 6 words) concise chat title summarizing: "${rawTitle}"`,
+          },
+        ]);
+
+        if (aiTitle) {
+          title = aiTitle.replace(/[".]/g, "").trim();
+        }
+      } catch (err) {
+        console.warn("AI title generation failed:", err);
+      }
+
+      // ⭐ Create new chat session with improved title
       chatSession = await prisma.chatSession.create({
         data: {
           title,
@@ -98,19 +125,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // 5. Merge previous + new messages
     // -----------------------------
     const previousMessages = parseDatabaseMessages(chatSession.messages);
-    
-    // Check if the last message is already the same as the new one to avoid duplicates
+
     const lastPreviousMessage = previousMessages[previousMessages.length - 1];
     const firstNewMessage = newMessages[0];
-    
+
     let history: ChatMessage[];
-    if (lastPreviousMessage && firstNewMessage && 
-        lastPreviousMessage.role === firstNewMessage.role && 
-        lastPreviousMessage.content === firstNewMessage.content) {
-      // If duplicate detected, use only previous messages
+
+    if (
+      lastPreviousMessage &&
+      firstNewMessage &&
+      lastPreviousMessage.role === firstNewMessage.role &&
+      lastPreviousMessage.content === firstNewMessage.content
+    ) {
       history = previousMessages;
     } else {
-      // Otherwise merge normally
       history = [...previousMessages, ...newMessages];
     }
 
@@ -123,6 +151,35 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ...history,
       { role: "assistant", content: aiReply },
     ];
+
+    // ---------------------------------------------------------
+    // ⭐ OPTIONAL IMPROVEMENT:
+    // AUTO-UPDATE TITLE AFTER FIRST REAL TOPIC MESSAGE
+    // ---------------------------------------------------------
+    if (previousMessages.length === 0) {
+      // Update title when assistant sends first answer
+      try {
+        const newTitle = await generateChatReply([
+          {
+            role: "user",
+            content: `Generate a short (4–7 word) topic title for this conversation: "${updatedMessages
+              .map((m) => m.content)
+              .join(" ")}"`,
+          },
+        ]);
+
+        if (newTitle) {
+          await prisma.chatSession.update({
+            where: { id: chatSession.id },
+            data: {
+              title: newTitle.replace(/[".]/g, "").trim(),
+            },
+          });
+        }
+      } catch (e) {
+        console.log("Failed to auto-update title:", e);
+      }
+    }
 
     // -----------------------------
     // 7. Save messages back to database
@@ -141,7 +198,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       sessionId: chatSession.id,
       reply: aiReply,
-      messages: updatedMessages, // Return all messages including the new ones
+      messages: updatedMessages,
     });
   } catch (error) {
     console.error("Chat API error:", error);

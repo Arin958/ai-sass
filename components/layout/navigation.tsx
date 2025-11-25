@@ -42,6 +42,7 @@ export default function Navigation() {
 
         <SignedOut>
           <SignInButton
+        
             mode="modal"
          
           >

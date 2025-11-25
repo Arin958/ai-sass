@@ -9,6 +9,13 @@ import { useRouter } from "next/navigation"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useChat } from "@/context/chat-context"
+import { 
+  SignedIn, 
+  SignedOut, 
+  SignInButton, 
+  SignUpButton, 
+  UserButton 
+} from "@clerk/nextjs"
 
 export interface Message {
   role: "user" | "assistant"
@@ -179,6 +186,28 @@ export function ChatInterface({ sessionId }: ChatInterfaceProps) {
           {/* Right Section */}
           <div className="flex items-center gap-2">
             <ModeToggle />
+              <SignedOut>
+                        <SignInButton mode="modal">
+                          <button className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium text-sm sm:text-base px-4 py-2 cursor-pointer">
+                            Sign In
+                          </button>
+                        </SignInButton>
+                        <SignUpButton mode="modal">
+                          <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer hover:bg-[#5a3fe0] transition-colors">
+                            Sign Up
+                          </button>
+                        </SignUpButton>
+                      </SignedOut>
+                      
+                      <SignedIn>
+                        <UserButton 
+                          appearance={{
+                            elements: {
+                              avatarBox: "h-8 w-8",
+                            },
+                          }}
+                        />
+                      </SignedIn>
           </div>
         </div>
       </div>

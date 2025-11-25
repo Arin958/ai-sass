@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkProvider>
+        <ClerkProvider signInForceRedirectUrl="/tools/chat" signUpFallbackRedirectUrl="/tools/chat">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

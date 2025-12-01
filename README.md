@@ -1,5 +1,6 @@
 ## 🔗 Live Demo
-[**Deployed AI SaaS Platform**]((https://ai-sass-alpha.vercel.app/))  
+[**Deployed AI SaaS Platform**]
+((https://ai-sass-alpha.vercel.app/))  
 
 
 ## 💡 Project Description

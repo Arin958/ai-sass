@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 🔗 Live Demo
+[**Deployed AI SaaS Platform**]
+((https://ai-sass-alpha.vercel.app/))  
 
-## Getting Started
 
-First, run the development server:
+## 💡 Project Description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**AI Multitool SaaS** is a fully featured web platform that combines multiple AI-powered tools in a single dashboard.  
+Users can generate content, write code, debug code, optimize performance, create resumes, and chat with AI assistants — all from one application.  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Built using **Next.js 14**, **PostgreSQL**, **Prisma**, **Clerk Authentication**, and **OpenAI API**, this project demonstrates real-world full-stack development, production-ready deployment, and modern SaaS architecture.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### **Key Features**
+- **AI Blog Generator** – Generate high-quality blogs based on topic, tone, and length.  
+- **AI Resume Builder** – Create professional resumes tailored to jobs and skills.  
+- **AI Code Assistant** – Write, debug, and optimize code in multiple languages.  
+- **AI Code Explainer** – Break down complex code into simple explanations.  
+- **AI Bug Fixer** – Detect issues in code and generate fixes with reasoning.  
+- **AI Chat Assistant** – Ask questions or brainstorm ideas with AI in real-time.  
+- **User Dashboard** – Track your history, saved outputs, and tool usage.  
+- **Admin Panel** – Manage users, subscriptions, and analytics.  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Frontend:** Next.js 14, TypeScript, Tailwind CSS, shadcn/ui  
+- **Backend:** Next.js API Routes, Prisma ORM, PostgreSQL  
+- **Authentication:** Clerk (Email + Social Login)  
+- **AI Integration:** OpenAI API (GPT-4o Mini)  
+- **Deployment:** Vercel  
